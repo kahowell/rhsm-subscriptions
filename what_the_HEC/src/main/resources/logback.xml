@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <!--
+    Environment variables
+    SPLUNK_SOURCE=pancakes
+    SPLUNK_SOURCE_TYPE=battlecat
+    SPLUNK_MESSAGE_FORMAT=text
+    SPLUNK_HEC_TOKEN=
+    SPLUNK_HEC_URL=http://localhost:8088
+    -->
+
+    <appender name="http" class="com.splunk.logging.HttpEventCollectorLogbackAppender">
+        <url>${SPLUNK_HEC_URL}</url>
+        <token>${SPLUNK_HEC_TOKEN}</token>
+        <source>${SPLUNK_SOURCE}</source>
+        <sourcetype>${SPLUNK_SOURCE_TYPE}</sourcetype>
+        <messageFormat>_json</messageFormat>
+        <middleware>HttpEventCollectorUnitTestMiddleware</middleware>
+<!--        <connectTimeout>5000</connectTimeout>-->
+<!--        <terminationTimeout>2000</terminationTimeout>-->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%msg</pattern>
+        </layout>
+    </appender>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <logger name="splunk.logger" additivity="false" level="INFO">
+        <appender-ref ref="http"/>
+    </logger>
+
+    <logger name="org.candlepin.subscriptions" level="debug" additivity="true">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="http"/>
+    </root>
+</configuration>
