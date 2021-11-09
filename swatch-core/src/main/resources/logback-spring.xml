@@ -39,4 +39,35 @@
         <appender-ref ref="ConsoleAppender" />
         <appender-ref ref="SplunkAppender" />
     </root>
+
+
+    <!--
+   Environment variables
+   SPLUNK_SOURCE=what_the_hec
+   SPLUNK_SOURCE_TYPE=springboot_server
+   SPLUNK_MESSAGE_FORMAT=text
+   SPLUNK_HEC_TOKEN=
+   SPLUNK_HEC_URL=
+   -->
+
+    <appender name="SplunkHEC" class="com.splunk.logging.HttpEventCollectorLogbackAppender">
+        <url>${SPLUNK_HEC_URL}</url>
+        <token>${SPLUNK_HEC_TOKEN}</token>
+        <source>${SPLUNK_SOURCE}</source>
+        <sourcetype>${SPLUNK_SOURCE_TYPE}</sourcetype>
+        <messageFormat>${SPLUNK_MESSAGE_FORMAT}</messageFormat>
+        <middleware>HttpEventCollectorUnitTestMiddleware</middleware>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSS'+0000'} [thread=%t] [level=%p] [category=%c] %X{user} - %m%n%ex{full, SECURITY_STACKTRACE_EVAL}</pattern>
+        </layout>
+    </appender>
+
+    <logger name="splunk.logger" additivity="false" level="INFO">
+        <appender-ref ref="SplunkHEC"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="SplunkHEC"/>
+    </root>
+
 </configuration>
