@@ -1,0 +1,25 @@
+name: Update environment alias branches on PR merge
+on:
+  pull_request:
+    types:
+      - closed
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: console.log(context)
+  update_stage_alias:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.git.updateRef(
+              context.repo.owner,
+              context.repo.repo,
+              'stage',
+              context.event.pull_request.merge_commit_sha
+            )
