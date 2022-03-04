@@ -20,6 +20,6 @@ jobs:
             github.rest.git.updateRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'stage',
+              ref: 'heads/stage',
               sha: context.payload.after
             })
