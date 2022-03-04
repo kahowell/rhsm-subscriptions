@@ -18,8 +18,8 @@ jobs:
         with:
           script: |
             github.rest.git.updateRef({
-              context.repo.owner,
-              context.repo.repo,
-              'stage',
-              context.payload.after
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'stage',
+              sha: context.payload.after
             })
